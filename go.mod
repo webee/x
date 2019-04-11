@@ -6,5 +6,6 @@ require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/jinzhu/configor v1.0.0
 	github.com/joho/godotenv v1.3.0
-	gopkg.in/yaml.v2 v2.2.2 // indirect
+	github.com/labstack/echo/v4 v4.0.0
+	github.com/swaggo/echo-swagger v0.0.0-20190329130007-1219b460a043
 )
