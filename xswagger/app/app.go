@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/swaggo/echo-swagger"
+	"github.com/swaggo/swag"
 )
 
 // App is app object
@@ -28,6 +29,12 @@ func (app *App) Destroy() {
 
 // CreateApp create a app object
 func CreateApp(debug bool, config *Config) *App {
+	if config.Static {
+		if _, err := swag.ReadDoc(); err != nil {
+			panic("no swagger registered, can't use static mode")
+		}
+	}
+
 	app := &App{config, echo.New()}
 
 	app.e.Debug = debug
@@ -54,11 +61,14 @@ func CreateApp(debug bool, config *Config) *App {
 		data["host"] = config.Host
 		return c.JSON(http.StatusOK, data)
 	})
-	if config.Dev {
-		app.e.GET(config.SwaggerPath+"*", echoSwagger.EchoWrapHandler(echoSwagger.URL(config.DocPath)))
-	} else {
-		app.e.GET(config.SwaggerPath+"*", echoSwagger.WrapHandler)
-	}
+
+	wrapHandler := echoSwagger.EchoWrapHandler(echoSwagger.URL(config.DocPath))
+	app.e.GET(config.SwaggerPath+"*", func(c echo.Context) error {
+		if config.Static {
+			return echoSwagger.WrapHandler(c)
+		}
+		return wrapHandler(c)
+	})
 
 	return app
 }
