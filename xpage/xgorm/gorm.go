@@ -22,11 +22,11 @@ func NewPaginator(query *gorm.DB, items interface{}) xpage.Paginator {
 
 // Paginate 实现Paginator接口
 func (p *gormPaginator) Paginate(page, perPage int) (*xpage.Pagination, error) {
-	var total int
+	var total int64
 	done := make(chan error, 1)
 	go getTotal(p.query, &total, done)
 
-	if err := p.query.Offset((page - 1) * perPage).Limit(perPage).Find(p.items).Error; err != nil {
+	if err := p.query.Offset(xpage.CalcOffset(page, perPage)).Limit(perPage).Find(p.items).Error; err != nil {
 		return nil, fmt.Errorf("pagination error: %v", err)
 	}
 
@@ -34,29 +34,9 @@ func (p *gormPaginator) Paginate(page, perPage int) (*xpage.Pagination, error) {
 		return nil, fmt.Errorf("pagination error: %v", err)
 	}
 
-	pages := (total + perPage - 1) / perPage
-	hasPrev := page > 1
-	hasNext := page < pages
-	prevPage := page
-	if hasPrev {
-		prevPage = page - 1
-	}
-	nextPage := page
-	if hasNext {
-		nextPage = page + 1
-	}
-	return &xpage.Pagination{
-		HasPrev:  hasPrev,
-		HasNext:  hasNext,
-		Pages:    pages,
-		PrevPage: prevPage,
-		NextPage: nextPage,
-		Items:    p.items,
-		Page:     page,
-		PerPage:  perPage,
-		Total:    total}, nil
+	return xpage.NewPagination(page, perPage, total, p.items), nil
 }
 
-func getTotal(query *gorm.DB, total *int, done chan error) {
+func getTotal(query *gorm.DB, total *int64, done chan error) {
 	done <- query.Count(total).Error
 }

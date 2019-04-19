@@ -1,49 +1,46 @@
 package xes
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 
-	"github.com/jinzhu/gorm"
+	"github.com/olivere/elastic/v7"
 	"github.com/webee/x/xpage"
 )
 
-// Paginate 对查询query进行分页
-func Paginate(query *gorm.DB, page, perPage int, items interface{}) (*xpage.Pagination, error) {
-	var total int
-	done := make(chan error, 1)
-	go getTotal(query, &total, done)
-
-	if err := query.Offset((page - 1) * perPage).Limit(perPage).Find(items).Error; err != nil {
-		return nil, fmt.Errorf("pagination error: %v", err)
-	}
-
-	if err := <-done; err != nil {
-		return nil, fmt.Errorf("pagination error: %v", err)
-	}
-
-	pages := (total + perPage - 1) / perPage
-	hasPrev := page > 1
-	hasNext := page < pages
-	prevPage := page
-	if hasPrev {
-		prevPage = page - 1
-	}
-	nextPage := page
-	if hasNext {
-		nextPage = page + 1
-	}
-	return &xpage.Pagination{
-		HasPrev:  hasPrev,
-		HasNext:  hasNext,
-		Pages:    pages,
-		PrevPage: prevPage,
-		NextPage: nextPage,
-		Items:    items,
-		Page:     page,
-		PerPage:  perPage,
-		Total:    total}, nil
+type esPaginator struct {
+	search *elastic.SearchService
 }
 
-func getTotal(query *gorm.DB, total *int, done chan error) {
-	done <- query.Count(total).Error
+// NewPaginator 创建分页器
+func NewPaginator(search *elastic.SearchService) xpage.Paginator {
+	return &esPaginator{search: search}
+}
+
+// Paginate 实现Paginator接口
+func (p *esPaginator) Paginate(page, perPage int) (*xpage.Pagination, error) {
+	var (
+		err error
+		ctx = context.Background()
+	)
+
+	res, err := p.search.From(xpage.CalcOffset(page, perPage)).Size(perPage).Do(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("pagination error: %v", err)
+	}
+
+	total := res.TotalHits()
+	items := make([]map[string]interface{}, 0)
+	for _, hit := range res.Hits.Hits {
+		d := make(map[string]interface{})
+		err := json.Unmarshal(hit.Source, &d)
+		if err != nil {
+			// FIXME: log here.
+			continue
+		}
+		items = append(items, d)
+	}
+
+	return xpage.NewPagination(page, perPage, total, items), nil
 }
