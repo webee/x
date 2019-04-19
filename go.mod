@@ -17,6 +17,7 @@ require (
 	github.com/mozillazg/go-cos v0.11.0
 	github.com/swaggo/echo-swagger v0.0.0-20190329130007-1219b460a043
 	github.com/swaggo/swag v1.5.0
+	github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190411092225-cd7c74ffb770
 	github.com/valyala/fasttemplate v1.0.1 // indirect
 	golang.org/x/net v0.0.0-20190328230028-74de082e2cca // indirect
 	golang.org/x/sys v0.0.0-20190402054613-e4093980e83e // indirect

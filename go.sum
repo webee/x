@@ -188,6 +188,8 @@ github.com/swaggo/swag v1.4.0/go.mod h1:hog2WgeMOrQ/LvQ+o1YGTeT+vWVrbi0SiIslBtxK
 github.com/swaggo/swag v1.5.0 h1:haK8VG3hj+v/c8hQ4f3U+oYpkdI/26m9LAUTXHOv+2U=
 github.com/swaggo/swag v1.5.0/go.mod h1:+xZrnu5Ut3GcUkKAJm9spnOooIS1WB1cUOkLNPrvrE0=
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
+github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190411092225-cd7c74ffb770 h1:PEuPu+KrOJZhTvJf9BwwfiTPdDQkMi5PklmkMK6xqPo=
+github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190411092225-cd7c74ffb770/go.mod h1:/4BhymH1yO6ljUGQgcKsd7L3W+pdKRxoRiOuoZPLnGg=
 github.com/ugorji/go v1.1.2/go.mod h1:hnLbHMwcvSihnDhEfx2/BzKp2xb0Y+ErdfYcrs9tkJQ=
 github.com/ugorji/go/codec v0.0.0-20181209151446-772ced7fd4c2/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780/go.mod h1:iT03XoTwV7xq/+UGwKO3UbC1nNNlopQiY61beSdrtOA=
