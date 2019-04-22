@@ -39,6 +39,7 @@ func (p *esPaginator) Paginate(page, perPage int) (*xpage.Pagination, error) {
 			// FIXME: log here.
 			continue
 		}
+		d["_highlight"] = hit.Highlight
 		items = append(items, d)
 	}
 
