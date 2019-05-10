@@ -2,6 +2,7 @@ package xfile
 
 import (
 	"io"
+	"net/url"
 	"os"
 )
 
@@ -11,15 +12,15 @@ type LocalFileResourceHandler struct{}
 // CanHandle 文件资源处理接口
 func (h *LocalFileResourceHandler) CanHandle(path string) bool {
 	var (
-		stat os.FileInfo
-		err  error
+		u   *url.URL
+		err error
 	)
-	if stat, err = os.Stat(path); err != nil {
+
+	if u, err = url.Parse(path); err != nil {
 		return false
 	}
 
-	// 不能是目录
-	return !stat.IsDir()
+	return u.Scheme == "" && u.Host == ""
 }
 
 // OpenForRead 文件资源处理接口
