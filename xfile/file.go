@@ -99,3 +99,8 @@ func (h *MultiFileResourceHandler) EntityTag(path string) (etag string, err erro
 
 	return handler.EntityTag(path)
 }
+
+// IsModified 文件资源处理接口
+func (h *MultiFileResourceHandler) IsModified(path string, etag string) (ok bool, err error) {
+	return FileIsModified(h, path, etag)
+}
