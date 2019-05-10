@@ -53,6 +53,9 @@ func (h *HTTPFileResourceHandler) EntityTag(path string) (etag string, err error
 	}
 
 	etag = resp.Header.Get("ETag")
+	if etag == "" {
+		etag = resp.Header.Get("Last-Modified")
+	}
 	return
 }
 
