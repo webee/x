@@ -40,6 +40,12 @@ func (h *HTTPFileResourceHandler) OpenForRead(path string) (reader io.ReadCloser
 	return
 }
 
+// CreateFile 文件资源处理接口
+func (h *HTTPFileResourceHandler) CreateFile(path string, reader io.Reader) (etag string, err error) {
+	err = ErrNotImplemented
+	return
+}
+
 // EntityTag 文件资源处理接口
 func (h *HTTPFileResourceHandler) EntityTag(path string) (etag string, err error) {
 	var (

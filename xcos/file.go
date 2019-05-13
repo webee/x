@@ -48,6 +48,11 @@ func (h *CosFileResource) OpenForRead(path string) (reader io.ReadCloser, err er
 	return
 }
 
+// CreateFile 文件资源处理接口
+func (h *CosFileResource) CreateFile(path string, reader io.Reader) (etag string, err error) {
+	return h.client.Create(path, reader)
+}
+
 // EntityTag 文件资源处理接口
 func (h *CosFileResource) EntityTag(path string) (etag string, err error) {
 	var (

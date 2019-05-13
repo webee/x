@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/url"
 	"os"
+	"path"
+	"time"
 )
 
 // LocalFileResourceHandler 本地文件资源
@@ -34,6 +36,34 @@ func (h *LocalFileResourceHandler) OpenForRead(path string) (reader io.ReadClose
 	return
 }
 
+// CreateFile 文件资源处理接口
+func (h *LocalFileResourceHandler) CreateFile(filePath string, reader io.Reader) (etag string, err error) {
+	var (
+		file *os.File
+		stat os.FileInfo
+	)
+	dir := path.Dir(filePath)
+	if err = os.MkdirAll(dir, os.ModePerm); err != nil {
+		return
+	}
+	if file, err = os.Create(filePath); err != nil {
+		return
+	}
+	defer file.Close()
+
+	if _, err = io.Copy(file, reader); err != nil {
+		return
+	}
+
+	if stat, err = file.Stat(); err != nil {
+		return
+	}
+
+	etag = stat.ModTime().Format(time.RFC3339Nano)
+
+	return
+}
+
 // EntityTag 文件资源处理接口
 func (h *LocalFileResourceHandler) EntityTag(path string) (etag string, err error) {
 	var (
@@ -46,7 +76,7 @@ func (h *LocalFileResourceHandler) EntityTag(path string) (etag string, err erro
 		return
 	}
 
-	etag = stat.ModTime().String()
+	etag = stat.ModTime().Format(time.RFC3339Nano)
 	return
 }
 

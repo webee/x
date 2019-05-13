@@ -7,16 +7,18 @@ import (
 
 // FileResourceHandler 文件资源处理器接口
 type FileResourceHandler interface {
-	CanHandle(path string) bool                        // 是否可以处理此路径
-	OpenForRead(path string) (io.ReadCloser, error)    // 打开文件，得到reader
-	EntityTag(path string) (string, error)             // 获取文件唯一标签
-	IsModified(path string, etag string) (bool, error) // 是否修改了
+	CanHandle(path string) bool                                        // 是否可以处理此路径
+	OpenForRead(path string) (io.ReadCloser, error)                    // 打开文件，得到reader
+	CreateFile(path string, reader io.Reader) (etag string, err error) // 新建文件
+	EntityTag(path string) (string, error)                             // 获取文件唯一标签
+	IsModified(path string, etag string) (bool, error)                 // 是否修改了
 }
 
 // errors
 var (
 	ErrFileNotExits     = errors.New("file not exists")
 	ErrCannotHandleFile = errors.New("can not handle file")
+	ErrNotImplemented   = errors.New("operation no implemented")
 )
 
 const (
@@ -86,6 +88,18 @@ func (h *MultiFileResourceHandler) OpenForRead(path string) (reader io.ReadClose
 	}
 
 	return handler.OpenForRead(path)
+}
+
+// CreateFile 文件资源处理接口
+func (h *MultiFileResourceHandler) CreateFile(path string, reader io.Reader) (etag string, err error) {
+	var (
+		handler FileResourceHandler
+	)
+	if handler, err = h.canHandle(path); err != nil {
+		return
+	}
+
+	return handler.CreateFile(path, reader)
 }
 
 // EntityTag 文件资源处理接口
