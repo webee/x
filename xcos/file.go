@@ -30,6 +30,10 @@ func (h *CosFileResource) CanHandle(path string) bool {
 	return strings.HasPrefix(path, CosPathPrefix)
 }
 
+func (h *CosFileResource) path(path string) string {
+	return strings.TrimLeft(path, CosPathPrefix)
+}
+
 // OpenForRead 文件资源处理接口
 func (h *CosFileResource) OpenForRead(path string) (reader io.ReadCloser, err error) {
 	var (
@@ -37,7 +41,7 @@ func (h *CosFileResource) OpenForRead(path string) (reader io.ReadCloser, err er
 		resp *cos.Response
 	)
 
-	path = strings.TrimLeft(path, CosPathPrefix)
+	path = h.path(path)
 	if resp, err = h.client.COS().Object.Get(ctx, path, nil); err != nil {
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			err = xfile.ErrFileNotExits
@@ -50,6 +54,7 @@ func (h *CosFileResource) OpenForRead(path string) (reader io.ReadCloser, err er
 
 // CreateFile 文件资源处理接口
 func (h *CosFileResource) CreateFile(path string, reader io.Reader) (etag string, err error) {
+	path = h.path(path)
 	return h.client.Create(path, reader)
 }
 
@@ -60,7 +65,7 @@ func (h *CosFileResource) EntityTag(path string) (etag string, err error) {
 		resp *cos.Response
 	)
 
-	path = strings.TrimLeft(path, CosPathPrefix)
+	path = h.path(path)
 	if resp, err = h.client.COS().Object.Head(ctx, path, nil); err != nil {
 		if resp != nil && resp.StatusCode == http.StatusNotFound {
 			err = xfile.ErrFileNotExits
