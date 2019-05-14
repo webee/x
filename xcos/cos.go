@@ -2,9 +2,7 @@ package xcos
 
 import (
 	"context"
-	"encoding/json"
 	"io"
-	"io/ioutil"
 	"strconv"
 	"sync"
 	"time"
@@ -29,24 +27,15 @@ type Client struct {
 // Create 创建文件
 func (c *Client) Create(key string, r io.Reader) (etag string, err error) {
 	var (
-		ctx   = context.Background()
-		resp  *cos.Response
-		bytes []byte
-		meta  = new(ObjectMetaData)
+		ctx  = context.Background()
+		resp *cos.Response
 	)
 
 	if resp, err = c.COS().Object.Put(ctx, key, r, &cos.ObjectPutOptions{}); err != nil {
 		return
 	}
-	defer resp.Body.Close()
 
-	if bytes, err = ioutil.ReadAll(resp.Body); err != nil {
-		return
-	}
-	if err = json.Unmarshal(bytes, meta); err != nil {
-		return
-	}
-	etag = meta.ETag
+	etag = resp.Header.Get("Etag")
 	return
 }
 
