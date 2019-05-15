@@ -3,18 +3,20 @@ package xcos
 import (
 	"context"
 	"io"
+	"net/http"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/hyacinthus/x/object"
 	cos "github.com/tencentyun/cos-go-sdk-v5"
+	"github.com/webee/x/xfile"
 )
 
 // ObjectMetaData 对象元数据
 type ObjectMetaData struct {
 	ContentType   string
-	ContentLength int
+	ContentLength int64
 	ETag          string
 	LastModified  time.Time
 }
@@ -48,11 +50,15 @@ func (c *Client) Head(key string) (*ObjectMetaData, error) {
 
 	resp, err := c.COS().Object.Head(ctx, key, nil)
 	if err != nil {
+		if resp != nil && resp.StatusCode == http.StatusNotFound {
+			err = xfile.ErrFileNotExits
+		}
 		return nil, err
 	}
+
 	meta := new(ObjectMetaData)
 	meta.ContentType = resp.Header.Get("Content-Type")
-	if len, err := strconv.Atoi(resp.Header.Get("Content-Length")); err == nil {
+	if len, err := strconv.ParseInt(resp.Header.Get("Content-Length"), 10, 64); err == nil {
 		meta.ContentLength = len
 	}
 	meta.ETag = resp.Header.Get("ETag")

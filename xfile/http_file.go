@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -44,6 +45,26 @@ func (h *HTTPFileResourceHandler) OpenForRead(path string) (reader io.ReadCloser
 func (h *HTTPFileResourceHandler) CreateFile(path string, reader io.Reader) (etag string, err error) {
 	err = ErrNotImplemented
 	return
+}
+
+// ContentLength 文件资源处理接口
+func (h *HTTPFileResourceHandler) ContentLength(path string) (length int64, err error) {
+	var (
+		resp *http.Response
+	)
+	if resp, err = http.Head(path); err != nil {
+		if resp != nil && resp.StatusCode == http.StatusNotFound {
+			err = ErrFileNotExits
+		}
+		return
+	}
+
+	lengthStr := resp.Header.Get("Content-Length")
+	if lengthStr == "" {
+		err = ErrNotImplemented
+		return
+	}
+	return strconv.ParseInt(lengthStr, 10, 64)
 }
 
 // EntityTag 文件资源处理接口

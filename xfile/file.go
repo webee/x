@@ -10,6 +10,7 @@ type FileResourceHandler interface {
 	CanHandle(path string) bool                                        // 是否可以处理此路径
 	OpenForRead(path string) (io.ReadCloser, error)                    // 打开文件，得到reader
 	CreateFile(path string, reader io.Reader) (etag string, err error) // 新建文件
+	ContentLength(path string) (length int64, err error)               // 文件内容长度
 	EntityTag(path string) (string, error)                             // 获取文件唯一标签
 	IsModified(path string, etag string) (bool, error)                 // 是否修改了
 }
@@ -100,6 +101,18 @@ func (h *MultiFileResourceHandler) CreateFile(path string, reader io.Reader) (et
 	}
 
 	return handler.CreateFile(path, reader)
+}
+
+// ContentLength 文件资源处理接口
+func (h *MultiFileResourceHandler) ContentLength(path string) (length int64, err error) {
+	var (
+		handler FileResourceHandler
+	)
+	if handler, err = h.canHandle(path); err != nil {
+		return
+	}
+
+	return handler.ContentLength(path)
 }
 
 // EntityTag 文件资源处理接口

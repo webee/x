@@ -58,22 +58,34 @@ func (h *CosFileResource) CreateFile(path string, reader io.Reader) (etag string
 	return h.client.Create(path, reader)
 }
 
-// EntityTag 文件资源处理接口
-func (h *CosFileResource) EntityTag(path string) (etag string, err error) {
+// ContentLength 文件资源处理接口
+func (h *CosFileResource) ContentLength(path string) (length int64, err error) {
 	var (
-		ctx  = context.Background()
-		resp *cos.Response
+		meta *ObjectMetaData
 	)
 
 	path = h.path(path)
-	if resp, err = h.client.COS().Object.Head(ctx, path, nil); err != nil {
-		if resp != nil && resp.StatusCode == http.StatusNotFound {
-			err = xfile.ErrFileNotExits
-		}
+
+	if meta, err = h.client.Head(path); err != nil {
 		return
 	}
 
-	etag = resp.Header.Get("ETag")
+	length = meta.ContentLength
+	return
+}
+
+// EntityTag 文件资源处理接口
+func (h *CosFileResource) EntityTag(path string) (etag string, err error) {
+	var (
+		meta *ObjectMetaData
+	)
+
+	path = h.path(path)
+	if meta, err = h.client.Head(path); err != nil {
+		return
+	}
+
+	etag = meta.ETag
 	return
 }
 

@@ -64,6 +64,22 @@ func (h *LocalFileResourceHandler) CreateFile(filePath string, reader io.Reader)
 	return
 }
 
+// ContentLength 文件资源处理接口
+func (h *LocalFileResourceHandler) ContentLength(path string) (length int64, err error) {
+	var (
+		stat os.FileInfo
+	)
+	if stat, err = os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			err = ErrFileNotExits
+		}
+		return
+	}
+
+	length = stat.Size()
+	return
+}
+
 // EntityTag 文件资源处理接口
 func (h *LocalFileResourceHandler) EntityTag(path string) (etag string, err error) {
 	var (
