@@ -31,7 +31,7 @@ type Client struct {
 }
 
 // New 新建Client
-func (c *Client) New(client *object.Client, config *object.Config) *Client {
+func New(client *object.Client, config *object.Config) *Client {
 	baseURL, _ := gocos.NewBaseURL(gocos.NewBucketURL(config.Bucket, config.AppID, config.Region, true).String())
 	return &Client{
 		Client: client,
