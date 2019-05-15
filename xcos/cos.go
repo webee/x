@@ -4,11 +4,13 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/hyacinthus/x/object"
+	gocos "github.com/mozillazg/go-cos"
 	cos "github.com/tencentyun/cos-go-sdk-v5"
 	"github.com/webee/x/xfile"
 )
@@ -24,6 +26,38 @@ type ObjectMetaData struct {
 // Client cos client
 type Client struct {
 	*object.Client
+	config *object.Config
+	cos    *gocos.Client
+}
+
+// New 新建Client
+func (c *Client) New(client *object.Client, config *object.Config) *Client {
+	baseURL, _ := gocos.NewBaseURL(gocos.NewBucketURL(config.Bucket, config.AppID, config.Region, true).String())
+	return &Client{
+		Client: client,
+		config: config,
+		cos: gocos.NewClient(baseURL, &http.Client{
+			Transport: &gocos.AuthorizationTransport{
+				SecretID:  config.SecretID,
+				SecretKey: config.SecretKey,
+				Expire:    time.Hour,
+			},
+		}),
+	}
+}
+
+// GetObjectPresignedURL 得到获取对象的预签名链接
+func (c *Client) GetObjectPresignedURL(key string, expire time.Duration) (*url.URL, error) {
+	var (
+		ctx = context.Background()
+	)
+
+	auth := gocos.Auth{
+		SecretID:  c.config.SecretID,
+		SecretKey: c.config.SecretKey,
+		Expire:    expire,
+	}
+	return c.cos.Object.PresignedURL(ctx, http.MethodGet, key, auth, nil)
 }
 
 // Create 创建文件

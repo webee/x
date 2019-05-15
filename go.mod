@@ -12,6 +12,7 @@ require (
 	github.com/jinzhu/gorm v1.9.5
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.1.5
+	github.com/mozillazg/go-cos v0.12.0
 	github.com/olivere/elastic/v7 v7.0.0
 	github.com/swaggo/echo-swagger v0.0.0-20190329130007-1219b460a043
 	github.com/swaggo/swag v1.5.0
