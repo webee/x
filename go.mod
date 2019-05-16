@@ -3,6 +3,7 @@ module github.com/webee/x
 go 1.12
 
 require (
+	github.com/dmulholland/mp3lib v0.0.0-20190407131416-50ad4bfbe332
 	github.com/go-openapi/jsonpointer v0.19.0 // indirect
 	github.com/go-openapi/jsonreference v0.19.0 // indirect
 	github.com/go-openapi/spec v0.19.0 // indirect
