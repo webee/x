@@ -31,7 +31,7 @@ func (h *CosFileResource) CanHandle(path string) bool {
 }
 
 func (h *CosFileResource) path(path string) string {
-	return strings.TrimLeft(path, CosPathPrefix)
+	return strings.HasPrefix(path, CosPathPrefix)
 }
 
 // OpenForRead 文件资源处理接口
