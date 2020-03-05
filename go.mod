@@ -10,7 +10,7 @@ require (
 	github.com/go-openapi/swag v0.19.0 // indirect
 	github.com/hyacinthus/x v0.0.0-20190505044153-e85fba3e6c85
 	github.com/jinzhu/configor v1.0.0
-	github.com/jinzhu/gorm v1.9.5
+	github.com/jinzhu/gorm v1.9.10
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.1.5
 	github.com/mozillazg/go-cos v0.12.0
