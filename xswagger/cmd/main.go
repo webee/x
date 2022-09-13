@@ -3,13 +3,13 @@ package cmd
 import (
 	"flag"
 
+	"github.com/swaggo/swag"
 	"github.com/webee/x/xconfig"
 	"github.com/webee/x/xswagger/app"
 )
 
 var (
 	config = new(Config)
-	a      *app.App
 )
 
 func init() {
@@ -25,8 +25,6 @@ func init() {
 	// sync make flags override config file.
 	rv.Sync()
 
-	// app
-	a = app.CreateApp(config.Debug, &config.APP)
 }
 
 // GetConfig 返回当前配置
@@ -35,11 +33,10 @@ func GetConfig() *Config {
 }
 
 // Start server
-func Start() {
-	// change to real host when use 'doc.json'.
-	// Note: do it in your command
-	// docs.SwaggerInfo.Host = cmd.GetConfig().APP.Host
+func Start(swaggerInfo *swag.Spec) {
+	// app
+	app := app.CreateApp(config.Debug, &config.APP, swaggerInfo)
+	defer app.Destroy()
 
-	defer a.Destroy()
-	a.Run(config.Address)
+	app.Run(config.Address)
 }
