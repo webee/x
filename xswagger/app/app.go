@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"github.com/swaggo/swag"
@@ -29,6 +30,16 @@ func (app *App) Destroy() {
 
 // CreateApp create a app object
 func CreateApp(debug bool, config *Config, swaggerInfo *swag.Spec) *App {
+	if !config.Static {
+		f, err := os.Open(config.DocFile)
+		if err != nil {
+			log.Warnf("open doc file error: %s", err)
+			log.Infof("fallback to static mode")
+			config.Static = true
+		}
+		f.Close()
+	}
+
 	if config.Static {
 		if swaggerInfo != nil {
 			swaggerInfo.Host = config.Host
