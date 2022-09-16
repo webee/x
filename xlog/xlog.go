@@ -25,7 +25,5 @@ func Debug() {
 		logger = logrus.New()
 	}
 	logger.SetLevel(logrus.DebugLevel)
-	logger.SetFormatter(&logrus.TextFormatter{
-		DisableColors: true,
-	})
+	// logger.SetFormatter(&logrus.TextFormatter{})
 }

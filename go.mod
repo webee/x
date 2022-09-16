@@ -9,6 +9,7 @@ require (
 	github.com/jinzhu/gorm v1.9.10
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.9.0
+	github.com/labstack/gommon v0.3.1
 	github.com/mozillazg/go-cos v0.12.0
 	github.com/olivere/elastic/v7 v7.0.0
 	github.com/sirupsen/logrus v1.4.1
@@ -29,7 +30,6 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect

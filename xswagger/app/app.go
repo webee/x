@@ -62,7 +62,14 @@ func CreateApp(debug bool, config *Config, swaggerInfo *swag.Spec) *App {
 		return c.Redirect(http.StatusMovedPermanently, config.SwaggerPath+"index.html")
 	})
 
-	app.e.GET(config.DocPath, func(c echo.Context) error {
+	g := app.e.Group("")
+	Register(g, config)
+
+	return app
+}
+
+func Register(g *echo.Group, config *Config) {
+	g.GET(config.DocPath, func(c echo.Context) error {
 		f, err := os.Open(config.DocFile)
 		if err != nil {
 			return err
@@ -79,12 +86,10 @@ func CreateApp(debug bool, config *Config, swaggerInfo *swag.Spec) *App {
 	})
 
 	wrapHandler := echoSwagger.EchoWrapHandler(echoSwagger.URL(config.DocPath))
-	app.e.GET(config.SwaggerPath+"*", func(c echo.Context) error {
+	g.GET(config.SwaggerPath+"*", func(c echo.Context) error {
 		if config.Static {
 			return echoSwagger.WrapHandler(c)
 		}
 		return wrapHandler(c)
 	})
-
-	return app
 }
