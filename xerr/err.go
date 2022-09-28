@@ -14,11 +14,11 @@ type Error struct {
 	// 错误代码，为英文字符串，前端可用此判断大的错误类型。
 	Key string `json:"error"`
 	// 错误消息，为详细错误描述，前端可选择性的展示此字段。
-	Message string `json:"message"`
+	Message any `json:"message,omitempty"`
 }
 
 // New 新建一个 Error 对象
-func New(code int, key string, msg string) *Error {
+func New(code int, key string, msg any) *Error {
 	return &Error{
 		code:    code,
 		Key:     key,
@@ -37,7 +37,7 @@ func Newf(code int, key string, format string, a ...interface{}) *Error {
 
 // Error makes it compatible with `error` interface.
 func (e *Error) Error() string {
-	return e.Key + ": " + e.Message
+	return fmt.Sprintf("[%d]: %s", e.code, e.Key)
 }
 
 type ErrorFunc func(err error) (ok bool, code int, key string, msg string)
@@ -62,7 +62,7 @@ func ErrorHandler(err error, c echo.Context) {
 	var (
 		code = http.StatusInternalServerError
 		key  = "ServerError"
-		msg  string
+		msg  any
 	)
 
 	// 二话不说先打日志

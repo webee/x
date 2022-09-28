@@ -6,7 +6,6 @@ require (
 	github.com/dmulholland/mp3lib v0.0.0-20190407131416-50ad4bfbe332
 	github.com/hyacinthus/x v0.0.0-20190505044153-e85fba3e6c85
 	github.com/jinzhu/configor v1.0.0
-	github.com/jinzhu/gorm v1.9.10
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.9.0
 	github.com/labstack/gommon v0.3.1
@@ -16,6 +15,7 @@ require (
 	github.com/swaggo/echo-swagger v1.3.4
 	github.com/swaggo/swag v1.8.5
 	github.com/tencentyun/cos-go-sdk-v5 v0.0.0-20190424070312-22c65bb37bc6
+	gorm.io/gorm v1.23.9
 )
 
 require (
@@ -28,6 +28,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
